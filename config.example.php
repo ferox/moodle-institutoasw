@@ -7,47 +7,49 @@ $CFG = new stdClass();
 /**
  * MOODLE COMPOSER
  *
- * Import moodlecomposer-util.php
+ * Import utils configuration file.
  */
-require_once(__DIR__ . '/../moodlecomposer-util.php');
+require_once(__DIR__ . '/../config/utils.php');
 
 //=========================================================================
 // 1. DATABASE SETUP
 //=========================================================================
-$CFG->dbtype    = moodlecomposer_get_env('MOODLE_DBTYPE', 'mysqli');
-$CFG->dblibrary = moodlecomposer_get_env('MOODLE_DBLIBRARY', 'native');
-$CFG->dbhost    = moodlecomposer_get_env('MOODLE_DBHOST', 'localhost');
-$CFG->dbname    = moodlecomposer_get_env('MOODLE_DBNAME');
-$CFG->dbuser    = moodlecomposer_get_env('MOODLE_DBUSER');
-$CFG->dbpass    = moodlecomposer_get_env('MOODLE_DBPASS');
-$CFG->prefix    = moodlecomposer_get_env('MOODLE_DBPREFIX', 'mdl_');
+$CFG->dbtype    = get_env('MOODLE_DBTYPE', 'mysqli');
+$CFG->dblibrary = get_env('MOODLE_DBLIBRARY', 'native');
+$CFG->dbhost    = get_env('MOODLE_DBHOST', 'localhost');
+$CFG->dbname    = get_env('MOODLE_DBNAME');
+$CFG->dbuser    = get_env('MOODLE_DBUSER');
+$CFG->dbpass    = get_env('MOODLE_DBPASS');
+$CFG->prefix    = get_env('MOODLE_DBPREFIX', 'mdl_');
 $CFG->dboptions = array(
     'dbpersist' => 0,
-    'dbport' => moodlecomposer_get_env('MOODLE_DBPORT', ''),
+    'dbport' => get_env('MOODLE_DBPORT', ''),
     'dbsocket' => '',
-    'dbcollation' => moodlecomposer_get_env('MOODLE_DBCOLLATION', 'utf8mb4_unicode_ci'),
+    'dbcollation' => get_env('MOODLE_DBCOLLATION', 'utf8mb4_unicode_ci'),
 );
 
 //=========================================================================
 // 2. WEB SITE LOCATION
 //=========================================================================
-$CFG->wwwroot   = moodlecomposer_get_env('MOODLE_WWWROOT');
+$CFG->wwwroot   = get_env('MOODLE_WWWROOT');
 
 //=========================================================================
 // 3. DATA FILES LOCATION
 //=========================================================================
-$CFG->dataroot  = moodlecomposer_get_env('MOODLE_DATAROOT');
+$CFG->dataroot  = __DIR__ . '/../' . get_env('MOODLE_DATAROOT');
 
 /**
  * MOODLE COMPOSER
  *
- * Import moodlecomposer-configextras.php (if exists)
+ * Import extra configuration file (if exists)
  */
-$moodlecomposer_configextras = __DIR__ . '/../moodlecomposer-configextras.php';
-if (file_exists($moodlecomposer_configextras)) {
-    require_once($moodlecomposer_configextras);
+$config_extras = __DIR__ . '/../config/extras.php';
+
+if (file_exists($config_extras)) {
+    require_once($config_extras);
 }
-unset($moodlecomposer_configextras);
+
+unset($config_extras);
 
 require_once(__DIR__ . '/lib/setup.php');
 

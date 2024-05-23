@@ -1,16 +1,16 @@
 {
-  "name": "michaelmeneses/moodle-composer",
-  "description": "Manage Moodle LMS and plugins using Composer at a root directory level (example ROOT/moodle).",
+  "name": "moodle/moodle-composer",
+  "description": "Manage Moodle LMS project using Composer.",
   "keywords": [
     "moodle",
     "composer"
   ],
   "license": "GPL-3.0",
-  "type": "composer-plugin",
+  "type": "project",
   "authors": [
     {
-      "name": "Michael Meneses",
-      "email": "michael@middag.com.br"
+      "name": "Fernando dos Santos",
+      "email": "ferox@disroot.org"
     }
   ],
   "repositories": [
@@ -22,22 +22,40 @@
   "require": {
     "composer/installers": "~1.0",
     "vlucas/phpdotenv": "^5.6",
-    "moodle/moodle": "4.4.*"
+    "moodle/moodle": "4.4.*",
+    "mdjnelson/moodle-mod_customcert": "2023042408"
   },
   "autoload": {
     "psr-4": {
-      "Middag\\": "src"
+      "Moodle\\": "app"
     }
   },
   "scripts": {
-    "pre-install-cmd": "Middag\\MoodleComposer::preInstall",
-    "post-install-cmd": "Middag\\MoodleComposer::postInstall",
-    "pre-update-cmd": "Middag\\MoodleComposer::preUpdate",
-    "post-update-cmd": "Middag\\MoodleComposer::postUpdate",
-    "post-package-install": "Middag\\MoodleComposer::postPackage",
-    "pre-package-update": "Middag\\MoodleComposer::preUpdatePackage",
-    "post-package-update": "Middag\\MoodleComposer::postPackage",
+    "create-links": [
+      "Moodle\\MoodleThemeLink::handleThemeLink"
+    ],
+    "pre-install-cmd": [
+      "@php -r \"is_dir('public') || mkdir('public');\"",
+      "Moodle\\Events\\MoodleScriptEvents::preInstall"
+    ],
+    "post-install-cmd": [
+      "Moodle\\Events\\MoodleScriptEvents::postInstall",
+      "Moodle\\MoodleThemeLink::handleThemeLink",
+      "@php -r \"file_exists('public/theme/.htaccess') || copy('.htaccess', 'public/theme/.htaccess');\"",
+      "@php -r \"file_exists('public/admin/.htaccess') || copy('.htaccess', 'public/admin/.htaccess');\"",
+      "@php -r \"file_exists('public/user/.htaccess') || copy('.htaccess', 'public/user/.htaccess');\"",
+      "@php -r \"file_exists('public/login/.htaccess') || copy('.htaccess', 'public/login/.htaccess');\"",
+      "@php -r \"rename('.htaccess', 'public/.htaccess');\""
+    ],
+    "pre-update-cmd": [
+      "Moodle\\Events\\MoodleScriptEvents::preUpdate"
+    ],
+    "post-update-cmd": "Moodle\\Events\\MoodleScriptEvents::postUpdate",
+    "post-package-install": "Moodle\\Events\\MoodleScriptEvents::postPackage",
+    "pre-package-update": "Moodle\\Events\\MoodleScriptEvents::preUpdatePackage",
+    "post-package-update": "Moodle\\Events\\MoodleScriptEvents::postPackage",
     "pre-autoload-dump": [
+      "@php -r \"file_exists('.htaccess') || copy('htaccess.example', '.htaccess');\"",
       "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
       "@php -r \"file_exists('config.php') || copy('config.example.php', 'config.php');\""
     ]

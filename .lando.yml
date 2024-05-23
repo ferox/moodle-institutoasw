@@ -1,0 +1,15 @@
+name: moodle-iasw-lms
+recipe: lamp
+config:
+  webroot: public
+  php: 8.1
+  database: mariadb:10.6.7
+  xdebug: true
+  config:
+    php: dev/php.ini
+
+services:
+  appserver:
+    overrides:
+      extra_hosts:
+        - "host.docker.internal:host-gateway"
